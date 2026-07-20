@@ -5,6 +5,7 @@ import toml
 import json
 from pathlib import Path
 from loguru import logger
+from .ai_adapter.OpenAI_adapter import OpenAI_Adapter
 load_dotenv()
 with open(Path("lo_bot/src/core/memory/character_profile.toml"),"r",encoding="utf-8") as f:
     character_profile=toml.load(f)

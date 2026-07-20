@@ -8,17 +8,19 @@ class Retry:
         self.count=count
         self.model_lists=model_lists
         self.model=self.model_lists[0]
-        self.timeout:int=None
         self.index_count=len(self.model_lists)
     def __call__(self,func):
         @functools.wraps(func)#保护原函数信息
         async def wrapper(instance:object,*args,**kwargs):
             """instance:object 被装饰对象，可通过这来修改对象属性"""
             stack=[]
+            init_timeout=kwargs.get("timeout",20)
+            self.timeout=init_timeout
             while self.model_lists.index(self.model)<self.index_count:
                 for i in range(self.count):
                     try:
                         kwargs["model"]=self.model
+                        kwargs["timeout"]=self.timeout
                         result=await func(instance,*args,**kwargs)
                         return result
                     except RetryableError as e:
@@ -27,13 +29,15 @@ class Retry:
                         "count":i,
                     })
                     logger.warning(f"retry {i} \n{e}")
+                    self.timeout=init_timeout+10*(i+1)
                 logger.error(f"retry {self.count} times failed \n{stack}")
                 logger.warning(f"重试次数结束，即将切换模型喵！")
                 stack.clear()
                 new_model=await self.switch_model()
                 if new_model!=None:
                     instance.model=new_model
-                    
+                    instance.timeout=init_timeout
+                    self.timeout=init_timeout
                 else:
                     break            
         return wrapper
