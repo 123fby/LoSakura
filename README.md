@@ -5,6 +5,7 @@
 ### 安装依赖
 ```shell
 pip install -r requirements.txt
+uv sync (recommended)
 ```
 ## 记忆
 正在缓慢进行
