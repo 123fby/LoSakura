@@ -2,7 +2,7 @@ import re
 from typing import Any, Dict, List
 from .custom_error import RetryableError
 from loguru import logger
-from types import functools
+import functools
 class Retry:
     def __init__(self,count:int=3,model_lists:List[str]=None):
         self.count=count
@@ -11,8 +11,8 @@ class Retry:
         self.index_count=len(self.model_lists)
     def __call__(self,func):
         @functools.wraps(func)#保护原函数信息
-        async def wrapper(instance:object,*args,**kwargs):
-            """instance:object 被装饰对象，可通过这来修改对象属性"""
+        async def wrapper(target:object,*args,**kwargs):
+            """target:object 被装饰对象，可通过这来修改对象属性"""
             stack=[]
             init_timeout=kwargs.get("timeout",20)
             self.timeout=init_timeout
@@ -21,7 +21,7 @@ class Retry:
                     try:
                         kwargs["model"]=self.model
                         kwargs["timeout"]=self.timeout
-                        result=await func(instance,*args,**kwargs)
+                        result=await func(target,*args,**kwargs)
                         return result
                     except RetryableError as e:
                         stack.append({
@@ -35,8 +35,8 @@ class Retry:
                 stack.clear()
                 new_model=await self.switch_model()
                 if new_model!=None:
-                    instance.model=new_model
-                    instance.timeout=init_timeout
+                    target.model=new_model
+                    target.timeout=init_timeout
                     self.timeout=init_timeout
                 else:
                     break            

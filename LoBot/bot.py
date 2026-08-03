@@ -5,7 +5,17 @@ from dotenv import load_dotenv
 from loguru import logger
 from global_singletion import set_chat_flow
 from lo_bot.src.logic.chat_flow import ChatFlow
-load_dotenv(Path(".env"))
+
+try:
+    load_dotenv(Path(".env"))
+except:
+    with open(".env","w") as f:
+        f.write("API_KEY=your_api_key")
+        f.write("BASE_URL=your_base_url")
+    with open(".env.prod","w") as f:
+        f.write("DRIVER=~fastapi")
+        f.write("BOT_QQ=your_bot_qq")
+    logger.error("请先配置.env and .env.prod文件")
 
 nonebot.init()
 driver = nonebot.get_driver()

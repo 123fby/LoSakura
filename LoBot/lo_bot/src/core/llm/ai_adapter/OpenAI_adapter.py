@@ -3,7 +3,7 @@ from loguru import logger
 from .custom_error import RetryableError
 from .shared import Retry
 from .base_adapter import BaseAdapter
-class OpanAI_Adapter(BaseAdapter):
+class OpenAI_Adapter(BaseAdapter):
     model_lists=["deepseek-ai/DeepSeek-V4-Flash","deepseek-ai/DeepSeek-V3.2","Pro/deepseek-ai/DeepSeek-V3.2"]
     def __init__(self,api_key,base_url):
         self.api_key=api_key
@@ -17,12 +17,16 @@ class OpanAI_Adapter(BaseAdapter):
     @Retry(count=3,model_lists=model_lists)
     async def chat(self,model:str=None,
             messages:list[str]=None,temperature:float=0.7,
-            max_tokens:int=1024,top_p:float=0.9,timeout:int =10,**kwargs) ->str|bool:
-            response=super().chat(model=model,
-            messages=messages,temperature=temperature,
-            max_tokens=max_tokens,top_p=top_p,timeout=timeout,**kwargs)
-            return response
-        
+            max_tokens:int=1024,top_p:float=0.9,timeout:int =10,**kwargs) ->str:
+            respones=await super().chat(model=model,messages=messages,temperature=temperature,max_tokens=max_tokens,top_p=top_p,timeout=timeout,**kwargs)
+            if respones:
+                return respones
+            else:
+                logger.error("OpenAI_adapter chat error")
+               
+            
+                 
+
 
     # @Retry(count=3,model_lists=model_lists)
     # async def chat(self,model:str=None,

@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
+from .custom_error import ChatError
 
 class BaseAdapter(ABC):
-    async def chat(self,model:str=None,
+    async def _chat(self,model:str=None,
         messages:list[str]=None,temperature:float=0.7,
-        max_tokens:int=1024,top_p:float=0.9,**kwargs) ->str|bool:
+        max_tokens:int=1024,top_p:float=0.9,**kwargs) ->str:
             msg=messages
             model=model or self.model
             self.model=model      
@@ -17,6 +18,13 @@ class BaseAdapter(ABC):
                 top_p=top_p,
                 **kwargs
                     )
-                return response
+                return response.choices[0].message.content.strip() 
             except Exception as e:
-                 pass
+                raise ChatError(e)
+    async def chat(self,**kwargs)->str|bool:
+        try:
+            response=await self._chat(**kwargs)
+            return response
+        except ChatError as e:
+            print(e)
+            return False
