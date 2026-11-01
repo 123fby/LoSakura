@@ -1,13 +1,25 @@
-# 洛洛·(LoBot)
+# 洛樱🌸·(LoSakura)
+
 ## 简介
-洛洛 是一个基于Python的机器人，目前使用nonebot框架来临时构建，未来将会使用独立框架
+
+洛樱（洛洛）是一个用于聊天的程序，目前处于开发阶段
+
 ## 安装
+
 ### 安装依赖
+
 ```shell
-pip install -r requirements.txt
-uv sync (recommended)
+uv sync 
 ```
+
 ## 记忆
+
 正在缓慢进行
-# 额外
-此为临时仓库
+
+## Loframework
+
+一个用于洛樱的框架（其实就是一堆杂七杂八的代码）
+
+## LoUI
+
+洛樱的UI框架，目前处于🤔阶段
