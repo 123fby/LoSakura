@@ -7,7 +7,7 @@ from pathlib import Path
 import json
 import importlib
 from losakura.src.plugins.plugins_base import PluginsBase
-from logura import logger
+from loguru import logger
 
 class PluginsManager:
     def __init__(self):

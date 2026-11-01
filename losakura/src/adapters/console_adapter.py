@@ -1,6 +1,6 @@
 from loframework.internal.matcher import Matcher
 from loframework.internal.adapter import Event
-from global_singletion import get_chat_flow
+
 
 from loguru import logger
 
